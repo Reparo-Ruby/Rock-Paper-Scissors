@@ -15,43 +15,38 @@ def player_guess():
 
 def check_guess(user_guess):
     
-    if user_guess == "R":
+    if user_guess.lower() == "r" or user_guess.lower() == "rock":
         user_guess = "Rock"
         return user_guess
 
-    elif user_guess == "P":
+    elif user_guess.lower() == "p" or user_guess.lower() =="paper":
         user_guess = "Paper"
         return user_guess
 
-    elif user_guess == "S":
+    elif user_guess.lower() == "s" or user_guess.lower() == "scissor":
         user_guess = "Scissor"
         return user_guess
 
     else:
         invalid_input()
-        return False
 
 
-def evaluate_rock(computer,rounds,userhand2):
+def evaluate_rock(computer,userhand2):
 
     if userhand2 == "Rock":
-        rounds -=1
         if computer == "Paper":
             print("Paper beats Rock!\n")
-            return True
+            return False
         elif computer == "Scissor":
             print("Rock beats Scissor!\n")
-            return False
+            return True
         elif computer == "Rock":
-            rounds += 1
             print("Its A Tie!\n")
-    return rounds   
 
 
-def evaluate_paper(computer,rounds,userhand2):
+def evaluate_paper(computer,userhand2):
 
     if userhand2 == "Paper":
-        rounds -=1
         if computer == "Rock":
             print("Paper beats Rock!\n")
             return True
@@ -59,15 +54,12 @@ def evaluate_paper(computer,rounds,userhand2):
             print("Scissor beats Paper!\n")
             return False
         elif computer == "Paper":
-            rounds += 1
-            print("Its A Tie!\n")
-    return rounds        
+            print("Its A Tie!\n")     
             
 
-def evaluate_scissor(computer,rounds,userhand2):
+def evaluate_scissor(computer,userhand2):
 
     if userhand2 == "Scissor":
-        rounds -=1
         if computer == "Paper":
             print("Scissor beats Paper!\n")
             return True
@@ -75,9 +67,7 @@ def evaluate_scissor(computer,rounds,userhand2):
             print("Rock beats Scissor!\n")
             return False
         elif computer == "Scissor":
-            rounds += 1
             print("Its A Tie!\n")
-    return rounds 
 
 
 def who_wins(computer,player):
@@ -97,45 +87,62 @@ def invalid_input():
 Game only understands [R]ock, [P]aper,[S]cissors.
 ******************************************************"""
     print(input)
-    return 
     
 
-def evaluate_responses(computer_pick,computer_wins,user_wins):
+def evaluate_wins(computer_pick,computer_wins,user_wins):
 
     rounds = 3
 
     while rounds != 0:
         computer = random.choice(computer_pick)
         userhand2 = check_guess(player_guess())
+            
+        if userhand2 == "Rock":
+            rounds -= 1
+            wins = evaluate_rock(computer,userhand2)
+            if wins == True:
+                user_wins += 1
 
-        if userhand2 == False:
-            break
+            elif wins == False:
+                computer_wins += 1 
 
-        if evaluate_rock(computer,rounds,userhand2):
-            if True:
-                user_wins +=1
+            else:
+                rounds += 1    
             continue
         
-        elif evaluate_paper(computer,rounds,userhand2):
-            if True:
+        elif userhand2 == "Paper":
+            rounds -= 1
+            wins = evaluate_paper(computer,userhand2)
+            if wins == True:
                 user_wins +=1
+
+            elif wins == False:
+                computer_wins += 1
+
+            else:
+                rounds += 1        
             continue
 
-        elif evaluate_scissor(computer,rounds,userhand2):
-            if True:
+        elif userhand2 == "Scissor":
+            rounds -= 1
+            wins = evaluate_rock(computer,userhand2)
+            if wins == True:
                 user_wins +=1
+
+            elif wins == False:
+                computer_wins += 1
+
+            else:
+                rounds += 1    
             continue
     
-        else:
-            computer_wins += 1
-
-        return computer_wins,user_wins    
+    return computer_wins,user_wins    
         
           
 def run_game():
     hands = ["Rock","Paper","Scissor"]
     game_welcome()
-    com,you = evaluate_responses(hands,0,0)
+    com,you = evaluate_wins(hands,0,0)
     who_wins(com,you)
 
 
